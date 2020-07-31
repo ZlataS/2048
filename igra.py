@@ -1,24 +1,6 @@
 import random
 import pygame as pg
 import copy
-import time
-import msvcrt
-import sys
-class keyboardDisable():
-
-    def start(self):
-        self.on = True
-
-    def stop(self):
-        self.on = False
-
-    def __call__(self):
-        while self.on:
-            msvcrt.getwch()
-
-
-    def __init__(self):
-        self.on = False
 clock = pg.time.Clock()
 pozadina = (64, 64, 64)
 boje = {0:(74, 74, 74),2:(255,224,153),4:(255,158,102),8:(255, 100, 71),16:(246, 189, 0),32:(100,60,10),64:(200,0,0),128:(111,53,70),256:(50,200,200),512:(125,75,199),1024:(144,10,40),2048:(255,255,180)}
@@ -132,29 +114,14 @@ def CrtajTablu():
     prozor.fill(pozadina)# brisanje prethodne table
     for i in range(VelicinaTable):
         for j in range(VelicinaTable):
-            boja = boje.get(0, [])
-            pg.draw.rect(prozor, boja,
-                         [(margina + sirinapolja) * j + margina, (margina + visinapolja) * i + margina, sirinapolja,
-                          visinapolja])
-
-    for i in range(VelicinaTable):
-        for j in range(VelicinaTable):
             boja = boje.get(tabla[i][j], [])
             pg.draw.rect(prozor, boja,[(margina + sirinapolja) * j + margina, (margina + visinapolja) * i + margina, sirinapolja,visinapolja])
             if tabla[i][j]!=0:
                 crtajbroj(tabla[i][j],(margina + sirinapolja) * j + margina+sirinapolja//2, (margina + visinapolja) * i+margina+visinapolja//2)
-def izgubiosi():
-    font = pg.font.SysFont('boulder', 100)
-    tekst = font.render("PORAZ", True, (255, 255, 255))
-    prozor.fill(pozadina)
-    prozor.blit(tekst, (19, 100))
-    pg.display.update()
-def pobediosi():
-    font = pg.font.SysFont('boulder', 100)
-    tekst = font.render("POBEDA", True, (255, 255, 255))
-    prozor.fill(pozadina)
-    prozor.blit(tekst, (10, 100))
-    pg.display.update()
+izgubio_si = False
+pobedio_si = False
+font = pg.font.SysFont('boulder', 20)
+tekst2 = font.render("pritisni SPACE da pokrenes novu partiju", True, (255, 255, 255))
 slpolje()
 slpolje()
 prtabla = copy.deepcopy(tabla)
@@ -162,41 +129,60 @@ CrtajTablu()
 done = False
 while not done:
     for dogadjaj in pg.event.get():
-        if stanjeigre()==0 or stanjeigre()==2:
-            for i in range(VelicinaTable):
-                for j in range(VelicinaTable):
-                    tabla[i][j] = 0
-                    pomerajdesno[i][j] = 0
-                    pomerajdole[i][j] = 0
-            slpolje()
-            slpolje()
-            CrtajTablu()
         if dogadjaj.type == pg.QUIT:
             done = True
-        elif dogadjaj.type == pg.KEYDOWN and stanjeigre()!=2:
+        elif dogadjaj.type == pg.KEYDOWN:
             mogucpotez = True
-            if dogadjaj.key == pg.K_LEFT:
-                PotezLevo()
-                CrtajTablu()
-            elif dogadjaj.key == pg.K_RIGHT:
-                PotezDesno()
-                CrtajTablu()
-            elif dogadjaj.key == pg.K_DOWN:
-                PotezDole()
-                CrtajTablu()
-            elif dogadjaj.key == pg.K_UP:
-                PotezGore()
-                CrtajTablu()
-            else: mogucpotez = False
-            if prtabla == tabla: mogucpotez = False
-            if mogucpotez:
+            if dogadjaj.key == pg.K_SPACE:
+                pobedio_si = False
+                izgubio_si = False
+                for i in range(VelicinaTable):
+                    for j in range(VelicinaTable):
+                        tabla[i][j] = 0
+                        pomerajdesno[i][j] = 0
+                        pomerajdole[i][j] = 0
                 slpolje()
-                prtabla = copy.deepcopy(tabla)
-            if stanjeigre() == 2:
-                izgubiosi()
-            elif stanjeigre() == 0:
-                pg.event.set_blocked()
-                pobediosi()
+                slpolje()
+                CrtajTablu()
+            if izgubio_si:
+                font = pg.font.SysFont('boulder', 100)
+                tekst = font.render("PORAZ", True, (255, 255, 255))
+                prozor.fill(pozadina)
+                prozor.blit(tekst, ((VelicinaTable-4)*((sirinapolja+margina)//2)+19, dimenzijeprozora[1]//2-45))
+                prozor.blit((VelicinaTable-4)*((sirinapolja+margina)//2)+20, (20, dimenzijeprozora[1]//2+20))
+                pg.display.update()
+            elif pobedio_si:
+                font = pg.font.SysFont('boulder', 100)
+                tekst = font.render("POBEDA", True, (255, 255, 255))
+                prozor.fill(pozadina)
+                prozor.blit(tekst, ((VelicinaTable-4)*((sirinapolja+margina)//2), dimenzijeprozora[1]//2-45))
+                prozor.blit(tekst2, ((VelicinaTable-4)*((sirinapolja+margina)//2)+20, dimenzijeprozora[1]//2+20))
+                pg.display.update()
+            else:
+                if dogadjaj.key == pg.K_LEFT:
+                    PotezLevo()
+                    CrtajTablu()
+                elif dogadjaj.key == pg.K_RIGHT:
+                    PotezDesno()
+                    CrtajTablu()
+                elif dogadjaj.key == pg.K_DOWN:
+                    PotezDole()
+                    CrtajTablu()
+                elif dogadjaj.key == pg.K_UP:
+                    PotezGore()
+                    CrtajTablu()
+                else:
+                    mogucpotez = False
+                if prtabla == tabla:
+                    mogucpotez = False
+                if mogucpotez:
+                    slpolje()
+                    CrtajTablu()
+                    prtabla = copy.deepcopy(tabla)
+                if stanjeigre() == 2:
+                    izgubio_si = True
+                elif stanjeigre() == 0:
+                    pobedio_si = True
     clock.tick(60)
     pg.display.flip()
 pg.quit()
