@@ -55,7 +55,7 @@ def prevrnimatricu(tabla): #transpozicija matrice
     rez = [[tabla[j][i] for j in range(len(tabla))] for i in range(len(tabla[0]))]
     return rez
 def SpojiRedDesno(red):
-    for j in range (VelicinaTable-1): #maks broj pomeranja nadam se
+    for j in range (VelicinaTable): #maks broj pomeranja nadam se
         for i in range(VelicinaTable - 1):
             if red[i+1] == 0:
                 red[i+1] = red[i]
@@ -64,12 +64,13 @@ def SpojiRedDesno(red):
             if red[i] == red[i - 1]:
                 red[i] += red[i]
                 red[i-1] = 0
-    for j in range(VelicinaTable - 1):
+    for j in range(VelicinaTable):
         for i in range(VelicinaTable - 1):
             if red[i+1] == 0:
                 red[i+1] = red[i]
                 red[i] = 0
-        return red
+
+    return red
 def SpojiRedLevo(red):
     red.reverse()
     red = SpojiRedDesno(red)
