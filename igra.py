@@ -141,23 +141,26 @@ def SpojiRedLevo(red):
     red = SpojiRedDesno(red)
     red.reverse()
     return red
+brzina = 3
 def PotezDesno():
     global tabla
     global pomerajdesno
     global prtabla
     for i in range(VelicinaTable):
         (tabla[i],pomerajdesno[i]) = SpojiRedDesno1(tabla[i],pomerajdesno[i])
-    for i in range (0,sirinapolja,3):
+    for i in range (0,sirinapolja,brzina):
         matrica = pomnozimatricu(pomerajdesno,i)
         CrtajTablu(prtabla, matrica)
-
+    pomocnatabla = copy.deepcopy(tabla)
     for i in range (VelicinaTable):
         for j in range(VelicinaTable):
             pomerajdesno[i][j]=0
 
     for i in range(VelicinaTable):
         (tabla[i],pomerajdesno[i]) = SpojiRedDesno2(tabla[i],pomerajdesno[i])
-    CrtajTablu(tabla, matrica)
+    for i in range (0,sirinapolja,brzina):
+        matrica = pomnozimatricu(pomerajdesno,i)
+        CrtajTablu(pomocnatabla, matrica)
 
     pomocnatabla = copy.deepcopy(tabla)
     for i in range (VelicinaTable):
@@ -166,7 +169,7 @@ def PotezDesno():
 
     for i in range(VelicinaTable):
         (tabla[i],pomerajdesno[i]) = SpojiRedDesno1(tabla[i],pomerajdesno[i])
-    for i in range (0,sirinapolja,3):
+    for i in range (0,sirinapolja,brzina):
         matrica = pomnozimatricu(pomerajdesno,i)
         CrtajTablu(pomocnatabla, matrica)
 def PotezLevo():
