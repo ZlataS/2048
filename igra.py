@@ -6,6 +6,8 @@ pozadina = (64, 64, 64)
 boje = {0:(74, 74, 74),2:(255,224,153),4:(255,158,102),8:(255, 100, 71),16:(246, 189, 0),32:(100,60,10),64:(200,0,0),128:(111,53,70),256:(50,200,200),512:(125,75,199),1024:(144,10,40),2048:(255,255,180)}
 tabla = []
 prtabla = []
+pomerajdesno = []
+pomerajdole = []
 VelicinaTable = 4 #moze da se menja velicina table, sada je 4x4
 (sirinapolja,visinapolja)=(60,60) #mogu da se menjaju dimenzije polja
 margina = 10 #moze da se menja sirina margine
@@ -16,15 +18,19 @@ def prvaigra():
     global prtabla
     for i in range(VelicinaTable):
         tabla.append([])
+        pomerajdesno.append([])
+        pomerajdole.append([])
         for j in range(VelicinaTable):
             tabla[i].append(0)
+            pomerajdesno[i].append(0)
+            pomerajdole[i].append(0)
     dimenzijeprozora = [sirinapolja * VelicinaTable + margina * (VelicinaTable + 1),
                         visinapolja * VelicinaTable + margina * (VelicinaTable + 1)]
     prozor = pg.display.set_mode(dimenzijeprozora)
     slpolje()
     slpolje()
     prtabla = copy.deepcopy(tabla)
-    CrtajTablu()
+    CrtajTablu(tabla,pomerajdesno)
 pg.init()
 prozor = pg.display.set_mode([280,320])
 pg.display.set_caption("2048")
@@ -76,8 +82,18 @@ def stanjeigre():
 def prevrnimatricu(tabla): #transpozicija matrice
     rez = [[tabla[j][i] for j in range(len(tabla))] for i in range(len(tabla[0]))]
     return rez
+def pomnozimatricu(tabla,n):
+    rez = []
+    for i in range(VelicinaTable):
+        rez.append([])
+        for j in range(VelicinaTable):
+            rez[i].append(0)
+    for i in range(VelicinaTable):
+        for j in range(VelicinaTable):
+            rez[i][j]=n*tabla[i][j]
+    return rez
 def SpojiRedDesno(red):
-    for j in range (VelicinaTable): #maks broj pomeranja nadam se
+    for j in range (VelicinaTable-1): #maks broj pomeranja nadam se
         for i in range(VelicinaTable - 1):
             if red[i+1] == 0:
                 red[i+1] = red[i]
@@ -86,13 +102,40 @@ def SpojiRedDesno(red):
             if red[i] == red[i - 1]:
                 red[i] += red[i]
                 red[i-1] = 0
-    for j in range(VelicinaTable):
+    for j in range(VelicinaTable-1):
         for i in range(VelicinaTable - 1):
             if red[i+1] == 0:
                 red[i+1] = red[i]
                 red[i] = 0
-
     return red
+def SpojiRedDesno1(red,pomerajreda):
+    prethodnired = copy.deepcopy(red)
+    for j in range (VelicinaTable-1): #maks broj pomeranja nadam se
+        for i in range(VelicinaTable - 1):
+            if red[i+1] == 0:
+                red[i+1] = red[i]
+                red[i] = 0
+    a=0
+    b=0
+    while True:
+        if a == VelicinaTable or b == VelicinaTable:
+            break
+        while prethodnired[a] == 0 and a<VelicinaTable-1:
+            a+=1
+        while red[b] == 0 and b<VelicinaTable-1:
+            b+=1
+        if a<VelicinaTable:
+            pomerajreda[a] = b-a
+        a+=1
+        b+=1
+    return red,pomerajreda
+def SpojiRedDesno2(red,pomerajreda):
+    for i in range(VelicinaTable - 1,0,-1):
+            if red[i] == red[i - 1]:
+                red[i] += red[i]
+                red[i-1] = 0
+                pomerajreda[i-1]+=1
+    return red,pomerajreda
 def SpojiRedLevo(red):
     red.reverse()
     red = SpojiRedDesno(red)
@@ -100,8 +143,32 @@ def SpojiRedLevo(red):
     return red
 def PotezDesno():
     global tabla
+    global pomerajdesno
+    global prtabla
     for i in range(VelicinaTable):
-        tabla[i] = SpojiRedDesno(tabla[i])
+        (tabla[i],pomerajdesno[i]) = SpojiRedDesno1(tabla[i],pomerajdesno[i])
+    for i in range (0,sirinapolja,3):
+        matrica = pomnozimatricu(pomerajdesno,i)
+        CrtajTablu(prtabla, matrica)
+
+    for i in range (VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdesno[i][j]=0
+
+    for i in range(VelicinaTable):
+        (tabla[i],pomerajdesno[i]) = SpojiRedDesno2(tabla[i],pomerajdesno[i])
+    CrtajTablu(tabla, matrica)
+
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range (VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdesno[i][j]=0
+
+    for i in range(VelicinaTable):
+        (tabla[i],pomerajdesno[i]) = SpojiRedDesno1(tabla[i],pomerajdesno[i])
+    for i in range (0,sirinapolja,3):
+        matrica = pomnozimatricu(pomerajdesno,i)
+        CrtajTablu(pomocnatabla, matrica)
 def PotezLevo():
     global tabla
     for i in range(VelicinaTable):
@@ -132,15 +199,22 @@ def crtajbroj(broj, x, y):
     else:
         x-=2*xbroja
     prozor.blit(tekst, (x,y))
-    #pg.display.update()
-def CrtajTablu():
+def CrtajTablu(tabla, pomerajdesno):
     prozor.fill(pozadina)# brisanje prethodne table
     for i in range(VelicinaTable):
         for j in range(VelicinaTable):
+            boja = boje.get(0, [])
+            pg.draw.rect(prozor, boja, [(margina + sirinapolja) * j + margina ,
+                                        (margina + visinapolja) * i + margina , sirinapolja,
+                                        visinapolja])
+    for i in range(VelicinaTable):
+        for j in range(VelicinaTable):
             boja = boje.get(tabla[i][j], [])
-            pg.draw.rect(prozor, boja,[(margina + sirinapolja) * j + margina, (margina + visinapolja) * i + margina, sirinapolja,visinapolja])
             if tabla[i][j]!=0:
-                crtajbroj(tabla[i][j],(margina + sirinapolja) * j + margina+sirinapolja//2, (margina + visinapolja) * i+margina+visinapolja//2)
+                pg.draw.rect(prozor, boja, [(margina + sirinapolja) * j + margina + pomerajdesno[i][j],
+                                            (margina + visinapolja) * i + margina + pomerajdole[i][j], sirinapolja,
+                                            visinapolja])
+                crtajbroj(tabla[i][j],(margina + sirinapolja) * j + margina+sirinapolja//2+pomerajdesno[i][j], (margina + visinapolja) * i+margina+visinapolja//2+pomerajdole[i][j])
     pg.display.flip()
 izgubio_si = False
 pobedio_si = False
@@ -175,7 +249,6 @@ while not done:
                 VelicinaTable = 3
             else: VelicinaTable = 5
             prvaigra()
-            poceloje = True
         elif dogadjaj.type == pg.KEYDOWN:
             mogucpotez = True
             if dogadjaj.key == pg.K_SPACE:
@@ -184,9 +257,11 @@ while not done:
                 for i in range(VelicinaTable):
                     for j in range(VelicinaTable):
                         tabla[i][j] = 0
+                        pomerajdesno[i][j]=0
+                        pomerajdole[i][j]=0
                 slpolje()
                 slpolje()
-                CrtajTablu()
+                CrtajTablu(tabla,pomerajdesno)
 
             else:
                 if dogadjaj.key == pg.K_LEFT:
@@ -203,7 +278,11 @@ while not done:
                     mogucpotez = False
                 if mogucpotez:
                     slpolje()
-                    CrtajTablu()
+                    for i in range(VelicinaTable):
+                        for j in range(VelicinaTable):
+                            pomerajdole[i][j] = 0
+                            pomerajdesno[i][j] = 0
+                    CrtajTablu(tabla,pomerajdesno)
                     prtabla = copy.deepcopy(tabla)
                 if stanjeigre() == 2:
                     izgubio_si = True
