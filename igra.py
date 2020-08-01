@@ -176,7 +176,7 @@ while not done:
                 tekst = font.render("PORAZ", True, (255, 255, 255))
                 prozor.fill(pozadina)
                 prozor.blit(tekst, ((VelicinaTable-4)*((sirinapolja+margina)//2)+19, dimenzijeprozora[1]//2-45))
-                prozor.blit(tekst2, (VelicinaTable-4)*((sirinapolja+margina)//2)+20, (20, dimenzijeprozora[1]//2+20))
+                prozor.blit(tekst2, ((VelicinaTable-4)*((sirinapolja+margina)//2)+20, dimenzijeprozora[1]//2+20))
                 pg.display.update()
             elif pobedio_si:
                 font = pg.font.SysFont('boulder', 100)
