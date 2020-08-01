@@ -132,7 +132,7 @@ def crtajbroj(broj, x, y):
     else:
         x-=2*xbroja
     prozor.blit(tekst, (x,y))
-    pg.display.update()
+    #pg.display.update()
 def CrtajTablu():
     prozor.fill(pozadina)# brisanje prethodne table
     for i in range(VelicinaTable):
@@ -141,6 +141,7 @@ def CrtajTablu():
             pg.draw.rect(prozor, boja,[(margina + sirinapolja) * j + margina, (margina + visinapolja) * i + margina, sirinapolja,visinapolja])
             if tabla[i][j]!=0:
                 crtajbroj(tabla[i][j],(margina + sirinapolja) * j + margina+sirinapolja//2, (margina + visinapolja) * i+margina+visinapolja//2)
+    pg.display.flip()
 izgubio_si = False
 pobedio_si = False
 font = pg.font.SysFont('boulder', 20)
@@ -174,6 +175,7 @@ while not done:
                 VelicinaTable = 3
             else: VelicinaTable = 5
             prvaigra()
+            poceloje = True
         elif dogadjaj.type == pg.KEYDOWN:
             mogucpotez = True
             if dogadjaj.key == pg.K_SPACE:
@@ -189,16 +191,12 @@ while not done:
             else:
                 if dogadjaj.key == pg.K_LEFT:
                     PotezLevo()
-                    CrtajTablu()
                 elif dogadjaj.key == pg.K_RIGHT:
                     PotezDesno()
-                    CrtajTablu()
                 elif dogadjaj.key == pg.K_DOWN:
                     PotezDole()
-                    CrtajTablu()
                 elif dogadjaj.key == pg.K_UP:
                     PotezGore()
-                    CrtajTablu()
                 else:
                     mogucpotez = False
                 if prtabla == tabla:
@@ -212,5 +210,4 @@ while not done:
                 elif stanjeigre() == 0:
                     pobedio_si = True
     clock.tick(60)
-    pg.display.flip()
 pg.quit()
