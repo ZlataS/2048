@@ -30,7 +30,7 @@ def prvaigra():
     slpolje()
     slpolje()
     prtabla = copy.deepcopy(tabla)
-    CrtajTablu(tabla,pomerajdesno)
+    CrtajTablu(tabla,pomerajdesno,pomerajdole)
 pg.init()
 prozor = pg.display.set_mode([280,320])
 pg.display.set_caption("2048")
@@ -141,16 +141,33 @@ def SpojiRedLevo(red):
     red = SpojiRedDesno(red)
     red.reverse()
     return red
+def SpojiRedLevo1(red,pomerajreda):
+    red.reverse()
+    pomerajreda.reverse()
+    (red,pomerajreda)= SpojiRedDesno1(red,pomerajreda)
+    red.reverse()
+    pomerajreda.reverse()
+    for i in range (VelicinaTable):
+        pomerajreda[i] = -1*pomerajreda[i]
+    return red,pomerajreda
+def SpojiRedLevo2(red,pomerajreda):
+    red.reverse()
+    pomerajreda.reverse()
+    (red, pomerajreda) = SpojiRedDesno2(red, pomerajreda)
+    red.reverse()
+    pomerajreda.reverse()
+    for i in range (VelicinaTable):
+        pomerajreda[i] = -1*pomerajreda[i]
+    return red, pomerajreda
 brzina = 3
 def PotezDesno():
     global tabla
     global pomerajdesno
-    global prtabla
     for i in range(VelicinaTable):
         (tabla[i],pomerajdesno[i]) = SpojiRedDesno1(tabla[i],pomerajdesno[i])
     for i in range (0,sirinapolja,brzina):
         matrica = pomnozimatricu(pomerajdesno,i)
-        CrtajTablu(prtabla, matrica)
+        CrtajTablu(prtabla, matrica,pomerajdole)
     pomocnatabla = copy.deepcopy(tabla)
     for i in range (VelicinaTable):
         for j in range(VelicinaTable):
@@ -158,9 +175,9 @@ def PotezDesno():
 
     for i in range(VelicinaTable):
         (tabla[i],pomerajdesno[i]) = SpojiRedDesno2(tabla[i],pomerajdesno[i])
-    for i in range (0,sirinapolja,brzina):
+    for i in range (0,sirinapolja,brzina*2):
         matrica = pomnozimatricu(pomerajdesno,i)
-        CrtajTablu(pomocnatabla, matrica)
+        CrtajTablu(pomocnatabla, matrica,pomerajdole)
 
     pomocnatabla = copy.deepcopy(tabla)
     for i in range (VelicinaTable):
@@ -169,25 +186,122 @@ def PotezDesno():
 
     for i in range(VelicinaTable):
         (tabla[i],pomerajdesno[i]) = SpojiRedDesno1(tabla[i],pomerajdesno[i])
-    for i in range (0,sirinapolja,brzina):
+    for i in range (0,sirinapolja,brzina*2):
         matrica = pomnozimatricu(pomerajdesno,i)
-        CrtajTablu(pomocnatabla, matrica)
+        CrtajTablu(pomocnatabla, matrica,pomerajdole)
 def PotezLevo():
     global tabla
+    global pomerajdesno
     for i in range(VelicinaTable):
-        tabla[i] = SpojiRedLevo(tabla[i])
+        (tabla[i],pomerajdesno[i]) = SpojiRedLevo1(tabla[i],pomerajdesno[i])
+    for i in range (0,sirinapolja,brzina):
+        matrica = pomnozimatricu(pomerajdesno,i)
+        CrtajTablu(prtabla, matrica,pomerajdole)
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range (VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdesno[i][j]=0
+
+    for i in range(VelicinaTable):
+        (tabla[i],pomerajdesno[i]) = SpojiRedLevo2(tabla[i],pomerajdesno[i])
+    for i in range (0,sirinapolja,brzina*2):
+        matrica = pomnozimatricu(pomerajdesno,i)
+        CrtajTablu(pomocnatabla, matrica,pomerajdole)
+
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range (VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdesno[i][j]=0
+
+    for i in range(VelicinaTable):
+        (tabla[i],pomerajdesno[i]) = SpojiRedLevo1(tabla[i],pomerajdesno[i])
+    for i in range (0,sirinapolja,brzina*2):
+        matrica = pomnozimatricu(pomerajdesno,i)
+        CrtajTablu(pomocnatabla, matrica,pomerajdole)
 def PotezGore():
     global tabla
+    global pomerajdole
     tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
     for i in range(VelicinaTable):
-        tabla[i] = SpojiRedLevo(tabla[i])
+        (tabla[i],pomerajdole[i]) = SpojiRedLevo1(tabla[i],pomerajdole[i])
     tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range (0,sirinapolja,brzina):
+        matrica = pomnozimatricu(pomerajdole,i)
+        CrtajTablu(prtabla, pomerajdesno,matrica)
+
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range(VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdole[i][j]=0
+
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(VelicinaTable):
+        (tabla[i],pomerajdole[i]) = SpojiRedLevo2(tabla[i],pomerajdole[i])
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range (0,sirinapolja,brzina*2):
+        matrica = pomnozimatricu(pomerajdole,i)
+        CrtajTablu(pomocnatabla, pomerajdesno,matrica)
+
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range(VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdole[i][j] = 0
+
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(VelicinaTable):
+        (tabla[i],pomerajdole[i]) = SpojiRedLevo1(tabla[i],pomerajdole[i])
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range (0,sirinapolja,brzina*2):
+        matrica = pomnozimatricu(pomerajdole,i)
+        CrtajTablu(pomocnatabla, pomerajdesno,matrica)
 def PotezDole():
     global tabla
+    global pomerajdole
     tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
     for i in range(VelicinaTable):
-        tabla[i] = SpojiRedDesno(tabla[i])
+        (tabla[i], pomerajdole[i]) = SpojiRedDesno1(tabla[i], pomerajdole[i])
     tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(0, sirinapolja, brzina):
+        matrica = pomnozimatricu(pomerajdole, i)
+        CrtajTablu(prtabla, pomerajdesno, matrica)
+
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range(VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdole[i][j] = 0
+
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(VelicinaTable):
+        (tabla[i], pomerajdole[i]) = SpojiRedDesno2(tabla[i], pomerajdole[i])
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(0, sirinapolja, brzina * 2):
+        matrica = pomnozimatricu(pomerajdole, i)
+        CrtajTablu(pomocnatabla, pomerajdesno, matrica)
+
+    pomocnatabla = copy.deepcopy(tabla)
+    for i in range(VelicinaTable):
+        for j in range(VelicinaTable):
+            pomerajdole[i][j] = 0
+
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(VelicinaTable):
+        (tabla[i], pomerajdole[i]) = SpojiRedDesno1(tabla[i], pomerajdole[i])
+    tabla = prevrnimatricu(tabla)
+    pomerajdole = prevrnimatricu(pomerajdole)
+    for i in range(0, sirinapolja, brzina * 2):
+        matrica = pomnozimatricu(pomerajdole, i)
+        CrtajTablu(pomocnatabla, pomerajdesno, matrica)
 def crtajbroj(broj, x, y):
     font = pg.font.SysFont('boulder', 35)
     tekst = font.render(str(broj), True, (255, 255, 255))
@@ -202,7 +316,7 @@ def crtajbroj(broj, x, y):
     else:
         x-=2*xbroja
     prozor.blit(tekst, (x,y))
-def CrtajTablu(tabla, pomerajdesno):
+def CrtajTablu(tabla, pomerajdesno,pomerajdole):
     prozor.fill(pozadina)# brisanje prethodne table
     for i in range(VelicinaTable):
         for j in range(VelicinaTable):
@@ -264,7 +378,7 @@ while not done:
                         pomerajdole[i][j]=0
                 slpolje()
                 slpolje()
-                CrtajTablu(tabla,pomerajdesno)
+                CrtajTablu(tabla,pomerajdesno,pomerajdole)
 
             else:
                 if dogadjaj.key == pg.K_LEFT:
@@ -285,7 +399,7 @@ while not done:
                         for j in range(VelicinaTable):
                             pomerajdole[i][j] = 0
                             pomerajdesno[i][j] = 0
-                    CrtajTablu(tabla,pomerajdesno)
+                    CrtajTablu(tabla,pomerajdesno,pomerajdole)
                     prtabla = copy.deepcopy(tabla)
                 if stanjeigre() == 2:
                     izgubio_si = True
