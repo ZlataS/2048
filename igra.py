@@ -147,6 +147,20 @@ font = pg.font.SysFont('boulder', 20)
 tekst2 = font.render("pritisni SPACE da pokrenes novu partiju", True, (255, 255, 255))
 done = False
 while not done:
+    if izgubio_si:
+        font = pg.font.SysFont('boulder', 100)
+        tekst = font.render("PORAZ", True, (255, 255, 255))
+        prozor.fill(pozadina)
+        prozor.blit(tekst, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 19, dimenzijeprozora[1] // 2 - 45))
+        prozor.blit(tekst2, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 20, dimenzijeprozora[1] // 2 + 20))
+        pg.display.update()
+    elif pobedio_si:
+        font = pg.font.SysFont('boulder', 100)
+        tekst = font.render("POBEDA", True, (255, 255, 255))
+        prozor.fill(pozadina)
+        prozor.blit(tekst, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2), dimenzijeprozora[1] // 2 - 45))
+        prozor.blit(tekst2, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 20, dimenzijeprozora[1] // 2 + 20))
+        pg.display.update()
     for dogadjaj in pg.event.get():
         if dogadjaj.type == pg.QUIT:
             done = True
@@ -171,20 +185,7 @@ while not done:
                 slpolje()
                 slpolje()
                 CrtajTablu()
-            if izgubio_si:
-                font = pg.font.SysFont('boulder', 100)
-                tekst = font.render("PORAZ", True, (255, 255, 255))
-                prozor.fill(pozadina)
-                prozor.blit(tekst, ((VelicinaTable-4)*((sirinapolja+margina)//2)+19, dimenzijeprozora[1]//2-45))
-                prozor.blit(tekst2, ((VelicinaTable-4)*((sirinapolja+margina)//2)+20, dimenzijeprozora[1]//2+20))
-                pg.display.update()
-            elif pobedio_si:
-                font = pg.font.SysFont('boulder', 100)
-                tekst = font.render("POBEDA", True, (255, 255, 255))
-                prozor.fill(pozadina)
-                prozor.blit(tekst, ((VelicinaTable-4)*((sirinapolja+margina)//2), dimenzijeprozora[1]//2-45))
-                prozor.blit(tekst2, ((VelicinaTable-4)*((sirinapolja+margina)//2)+20, dimenzijeprozora[1]//2+20))
-                pg.display.update()
+
             else:
                 if dogadjaj.key == pg.K_LEFT:
                     PotezLevo()
