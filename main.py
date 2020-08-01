@@ -92,22 +92,6 @@ def pomnozimatricu(tabla,n):
         for j in range(VelicinaTable):
             rez[i][j]=n*tabla[i][j]
     return rez
-def SpojiRedDesno(red):
-    for j in range (VelicinaTable-1): #maks broj pomeranja nadam se
-        for i in range(VelicinaTable - 1):
-            if red[i+1] == 0:
-                red[i+1] = red[i]
-                red[i] = 0
-    for i in range(VelicinaTable - 1,0,-1):
-            if red[i] == red[i - 1]:
-                red[i] += red[i]
-                red[i-1] = 0
-    for j in range(VelicinaTable-1):
-        for i in range(VelicinaTable - 1):
-            if red[i+1] == 0:
-                red[i+1] = red[i]
-                red[i] = 0
-    return red
 def SpojiRedDesno1(red,pomerajreda):
     prethodnired = copy.deepcopy(red)
     for j in range (VelicinaTable-1): #maks broj pomeranja nadam se
@@ -136,11 +120,6 @@ def SpojiRedDesno2(red,pomerajreda):
                 red[i-1] = 0
                 pomerajreda[i-1]+=1
     return red,pomerajreda
-def SpojiRedLevo(red):
-    red.reverse()
-    red = SpojiRedDesno(red)
-    red.reverse()
-    return red
 def SpojiRedLevo1(red,pomerajreda):
     red.reverse()
     pomerajreda.reverse()
