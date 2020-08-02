@@ -36,8 +36,8 @@ prozor = pg.display.set_mode([280,320])
 pg.display.set_caption("2048")
 prozor.fill(pozadina)
 font = pg.font.SysFont('boulder', 40)
-tekst = font.render("Izaberi tablu:", True, (255, 255, 255))
-prozor.blit(tekst, (50, 20))
+tekst = font.render("Choose a board:", True, (255, 255, 255))
+prozor.blit(tekst, (30, 20))
 pg.draw.rect(prozor,(255,158,102),[20, 60, 110, 110])
 pg.draw.rect(prozor,(255,158,102),[150, 60, 110, 110])
 pg.draw.rect(prozor,(255,158,102),[20, 190, 110, 110])
@@ -315,22 +315,22 @@ def CrtajTablu(tabla, pomerajdesno,pomerajdole):
 izgubio_si = False
 pobedio_si = False
 font = pg.font.SysFont('boulder', 20)
-tekst2 = font.render("pritisni SPACE da pokrenes novu partiju", True, (255, 255, 255))
+tekst2 = font.render("press SPACE to play again", True, (255, 255, 255))
 done = False
 while not done:
     if izgubio_si:
-        font = pg.font.SysFont('boulder', 100)
-        tekst = font.render("PORAZ", True, (255, 255, 255))
+        font = pg.font.SysFont('boulder', 50)
+        tekst = font.render("GAME OVER", True, (255, 255, 255))
         prozor.fill(pozadina)
-        prozor.blit(tekst, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 19, dimenzijeprozora[1] // 2 - 45))
-        prozor.blit(tekst2, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 20, dimenzijeprozora[1] // 2 + 20))
+        prozor.blit(tekst, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2)+40, dimenzijeprozora[1] // 2 - 25))
+        prozor.blit(tekst2, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 60, dimenzijeprozora[1] // 2 + 20))
         pg.display.update()
     elif pobedio_si:
-        font = pg.font.SysFont('boulder', 100)
-        tekst = font.render("POBEDA", True, (255, 255, 255))
+        font = pg.font.SysFont('boulder', 60)
+        tekst = font.render("YOU WIN", True, (255, 255, 255))
         prozor.fill(pozadina)
-        prozor.blit(tekst, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2), dimenzijeprozora[1] // 2 - 45))
-        prozor.blit(tekst2, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 20, dimenzijeprozora[1] // 2 + 20))
+        prozor.blit(tekst, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2)+50, dimenzijeprozora[1] // 2 - 25))
+        prozor.blit(tekst2, ((VelicinaTable - 4) * ((sirinapolja + margina) // 2) + 60, dimenzijeprozora[1] // 2 + 20))
         pg.display.update()
     for dogadjaj in pg.event.get():
         if dogadjaj.type == pg.QUIT:
